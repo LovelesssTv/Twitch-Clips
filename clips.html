@@ -2,8 +2,8 @@
 <body>
     <iframe id="twitchPlayer" width="1920" height="1080" frameborder="0" allowfullscreen></iframe>
     <script>
-        // Lista delle clip
-        const clips = [
+        // Lista delle clip originali
+        const originalClips = [
             "https://clips.twitch.tv/embed?clip=BashfulStrongApePeteZarollTie&parent=lovelessstv.github.io",
             "https://clips.twitch.tv/embed?clip=CooperativeDeadSoybean4Head-jk8JNEFYap_s2T0A&parent=lovelessstv.github.io",
             "https://clips.twitch.tv/embed?clip=ConfidentPluckyLarkTBTacoRight-Ln2GHq1wtBEuDrJU&parent=lovelessstv.github.io",
@@ -12,31 +12,39 @@
             "https://clips.twitch.tv/embed?clip=CorrectBillowingGorillaMoreCowbell-n1Ab71TZLZGHJ5pm&parent=lovelessstv.github.io"
         ];
 
-        let lastClipIndex = -1; // Memorizza l'ultimo indice usato
+        let clips = [...originalClips]; // Copia la lista per evitare di modificarla direttamente
 
-        function getRandomClip() {
-            let randomIndex;
+        // Funzione per mescolare l'array (algoritmo Fisher-Yates)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]]; // Scambia gli elementi
+            }
+        }
 
-            // Garantisce che la clip scelta sia diversa dalla precedente
-            do {
-                randomIndex = Math.floor(Math.random() * clips.length);
-            } while (randomIndex === lastClipIndex);
+        // Funzione per ottenere la prossima clip senza ripetizioni fino a esaurimento
+        function getNextClip() {
+            if (clips.length === 0) {
+                clips = [...originalClips]; // Ricrea la lista originale
+                shuffleArray(clips); // Mescola l'elenco
+                console.log("Lista clip rimescolata");
+            }
 
-            lastClipIndex = randomIndex;
-            const randomClip = clips[randomIndex];
-            console.log("Clip selezionata:", randomClip);
+            const nextClip = clips.pop(); // Prende l'ultima clip dalla lista
+            console.log("Clip selezionata:", nextClip);
 
             const player = document.getElementById("twitchPlayer");
             player.src = ""; // Pulisce l'iframe
 
             setTimeout(() => {
-                player.src = randomClip + "&autoplay=true";  
+                player.src = nextClip + "&autoplay=true";
             }, 100);
         }
 
         // Avvia la prima clip e poi cambia ogni 30 secondi
-        getRandomClip();
-        setInterval(getRandomClip, 30000);
+        shuffleArray(clips); // Mescola inizialmente l'elenco
+        getNextClip();
+        setInterval(getNextClip, 30000);
     </script>
 </body>
 </html>

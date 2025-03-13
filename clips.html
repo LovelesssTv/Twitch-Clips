@@ -1,6 +1,6 @@
 <html>
 <body>
-    <iframe id="twitchPlayer" width="1920" height="1080" frameborder="0" allowfullscreen autoplay></iframe>
+    <iframe id="twitchPlayer" width="1280" height="720" frameborder="0" allowfullscreen autoplay></iframe>
     <script>
         // Lista delle clip
         const clips = [
@@ -15,7 +15,14 @@
         // Funzione per cambiare la clip casualmente
         function getRandomClip() {
             const randomClip = clips[Math.floor(Math.random() * clips.length)];
-            document.getElementById("twitchPlayer").src = randomClip + "&autoplay=true";  // Aggiungi autoplay al link della clip
+            console.log("Clip selezionata:", randomClip); // Log della clip selezionata
+            const player = document.getElementById("twitchPlayer");
+
+            // Pulisce l'iframe e poi lo ricarica con la nuova clip
+            player.src = ""; // Pulisce l'iframe
+            setTimeout(() => {
+                player.src = randomClip + "&autoplay=true";  // Reimposta l'iframe con la nuova clip
+            }, 100);  // Aggiungi un piccolo ritardo per garantire che il ricaricamento funzioni correttamente
         }
 
         // Cambia la clip ogni 30 secondi

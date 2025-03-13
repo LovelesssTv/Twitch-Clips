@@ -1,22 +1,21 @@
 <html>
 <body>
-    <iframe id="twitchPlayer" width="1280" height="720" frameborder="0" allowfullscreen></iframe>
+    <iframe id="twitchPlayer" width="1920" height="1080" frameborder="0" allowfullscreen autoplay></iframe>
     <script>
         // Lista delle clip
         const clips = [
-						"https://clips.twitch.tv/embed?clip=BashfulStrongApePeteZarollTie&parent=lovelessstv.github.io",
-						"https://clips.twitch.tv/embed?clip=CooperativeDeadSoybean4Head-jk8JNEFYap_s2T0A&parent=lovelessstv.github.io",
-						"https://clips.twitch.tv/embed?clip=ConfidentPluckyLarkTBTacoRight-Ln2GHq1wtBEuDrJU&parent=lovelessstv.github.io",
-						"https://clips.twitch.tv/embed?clip=AbstemiousCharmingMangetoutDxCat&parent=lovelessstv.github.io",
-						"https://clips.twitch.tv/embed?clip=EasyTolerantCoyoteTBTacoRight--Jtl0vA39gRLwA2N&parent=lovelessstv.github.io",
-						"https://clips.twitch.tv/embed?clip=CorrectBillowingGorillaMoreCowbell-n1Ab71TZLZGHJ5pm&parent=lovelessstv.github.io"
-						];
-
+            "https://clips.twitch.tv/embed?clip=BashfulStrongApePeteZarollTie&parent=lovelessstv.github.io",
+            "https://clips.twitch.tv/embed?clip=CooperativeDeadSoybean4Head-jk8JNEFYap_s2T0A&parent=lovelessstv.github.io",
+            "https://clips.twitch.tv/embed?clip=ConfidentPluckyLarkTBTacoRight-Ln2GHq1wtBEuDrJU&parent=lovelessstv.github.io",
+            "https://clips.twitch.tv/embed?clip=AbstemiousCharmingMangetoutDxCat&parent=lovelessstv.github.io",
+            "https://clips.twitch.tv/embed?clip=EasyTolerantCoyoteTBTacoRight--Jtl0vA39gRLwA2N&parent=lovelessstv.github.io",
+            "https://clips.twitch.tv/embed?clip=CorrectBillowingGorillaMoreCowbell-n1Ab71TZLZGHJ5pm&parent=lovelessstv.github.io"
+        ];
 
         // Funzione per cambiare la clip casualmente
         function getRandomClip() {
             const randomClip = clips[Math.floor(Math.random() * clips.length)];
-            document.getElementById("twitchPlayer").src = randomClip;
+            document.getElementById("twitchPlayer").src = randomClip + "&autoplay=true";  // Aggiungi autoplay al link della clip
         }
 
         // Cambia la clip ogni 30 secondi

@@ -23,6 +23,7 @@
         }
 
         function getNextClip() {
+            // Se tutte le clip sono state riprodotte, rimescola l'array
             if (clips.length === 0) {
                 clips = [...originalClips];
                 shuffleArray(clips);
@@ -38,12 +39,15 @@
             console.log("Clip selezionata:", nextClip);
 
             const player = document.getElementById("twitchPlayer");
-            player.src = "";
+
+            // Per forzare un ricaricamento completo dell'iframe
+            player.src = "";  // Pulisce l'iframe
             setTimeout(() => {
-                player.src = nextClip + "&autoplay=true";
-            }, 500);
+                player.src = nextClip + "&autoplay=true&nocache=" + new Date().getTime();  // Aggiungi un parametro unico per evitare caching
+            }, 100);  // Piccolo ritardo per permettere il ricaricamento corretto
         }
 
+        // Rimescola inizialmente le clip
         shuffleArray(clips);
         getNextClip();
         setInterval(getNextClip, 30000);

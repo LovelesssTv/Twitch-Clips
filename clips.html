@@ -1,7 +1,6 @@
 <html>
 <body>
-    <iframe id="twitchPlayer1" width="1920" height="1080" frameborder="0" allowfullscreen></iframe>
-    <iframe id="twitchPlayer2" width="1920" height="1080" frameborder="0" allowfullscreen style="display:none;"></iframe>
+    <iframe id="twitchPlayer" width="1920" height="1080" frameborder="0" allowfullscreen></iframe>
 
     <script>
         const originalClips = [
@@ -14,7 +13,7 @@
         ];
 
         let clips = [...originalClips];
-        let currentPlayer = 1; // Indica quale iframe è visibile
+        let lastClip = "";
 
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -30,23 +29,19 @@
                 console.log("Lista clip rimescolata");
             }
 
-            const nextClip = clips.pop();
+            let nextClip;
+            do {
+                nextClip = clips.pop();
+            } while (nextClip === lastClip && clips.length > 0);
+
+            lastClip = nextClip;
             console.log("Clip selezionata:", nextClip);
 
-            const player1 = document.getElementById("twitchPlayer1");
-            const player2 = document.getElementById("twitchPlayer2");
-
-            if (currentPlayer === 1) {
-                player2.src = nextClip + "&autoplay=true";
-                player2.style.display = "block";
-                player1.style.display = "none";
-                currentPlayer = 2;
-            } else {
-                player1.src = nextClip + "&autoplay=true";
-                player1.style.display = "block";
-                player2.style.display = "none";
-                currentPlayer = 1;
-            }
+            const player = document.getElementById("twitchPlayer");
+            player.src = "";
+            setTimeout(() => {
+                player.src = nextClip + "&autoplay=true";
+            }, 500);
         }
 
         shuffleArray(clips);

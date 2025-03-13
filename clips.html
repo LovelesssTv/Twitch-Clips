@@ -1,6 +1,6 @@
 <html>
 <body>
-    <iframe id="twitchPlayer" width="1920" height="1080" frameborder="0" allowfullscreen autoplay></iframe>
+    <iframe id="twitchPlayer" width="1920" height="1080" frameborder="0" allowfullscreen></iframe>
     <script>
         // Lista delle clip
         const clips = [
@@ -12,20 +12,29 @@
             "https://clips.twitch.tv/embed?clip=CorrectBillowingGorillaMoreCowbell-n1Ab71TZLZGHJ5pm&parent=lovelessstv.github.io"
         ];
 
-        // Funzione per cambiare la clip casualmente
-        function getRandomClip() {
-            const randomClip = clips[Math.floor(Math.random() * clips.length)];
-            console.log("Clip selezionata:", randomClip); // Log della clip selezionata
-            const player = document.getElementById("twitchPlayer");
+        let lastClipIndex = -1; // Memorizza l'ultimo indice usato
 
-            // Pulisce l'iframe e poi lo ricarica con la nuova clip
+        function getRandomClip() {
+            let randomIndex;
+
+            // Garantisce che la clip scelta sia diversa dalla precedente
+            do {
+                randomIndex = Math.floor(Math.random() * clips.length);
+            } while (randomIndex === lastClipIndex);
+
+            lastClipIndex = randomIndex;
+            const randomClip = clips[randomIndex];
+            console.log("Clip selezionata:", randomClip);
+
+            const player = document.getElementById("twitchPlayer");
             player.src = ""; // Pulisce l'iframe
+
             setTimeout(() => {
-                player.src = randomClip + "&autoplay=true";  // Reimposta l'iframe con la nuova clip
-            }, 100);  // Aggiungi un piccolo ritardo per garantire che il ricaricamento funzioni correttamente
+                player.src = randomClip + "&autoplay=true";  
+            }, 100);
         }
 
-        // Cambia la clip ogni 30 secondi
+        // Avvia la prima clip e poi cambia ogni 30 secondi
         getRandomClip();
         setInterval(getRandomClip, 30000);
     </script>

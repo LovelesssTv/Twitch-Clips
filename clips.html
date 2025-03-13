@@ -1,0 +1,26 @@
+<html>
+<body>
+    <iframe id="twitchPlayer" width="1280" height="720" frameborder="0" allowfullscreen></iframe>
+    <script>
+        // Lista delle clip
+        const clips = [
+            "https://clips.twitch.tv/embed?clip=BashfulStrongApePeteZarollTie&parent=www.twitch.tv",
+            "https://clips.twitch.tv/embed?clip=CooperativeDeadSoybean4Head-jk8JNEFYap_s2T0A&parent=www.twitch.tv",
+            "https://clips.twitch.tv/embed?clip=ConfidentPluckyLarkTBTacoRight-Ln2GHq1wtBEuDrJU&parent=www.twitch.tv",
+            "https://clips.twitch.tv/embed?clip=AbstemiousCharmingMangetoutDxCat&parent=www.twitch.tv",
+            "https://clips.twitch.tv/embed?clip=EasyTolerantCoyoteTBTacoRight--Jtl0vA39gRLwA2N&parent=www.twitch.tv",
+            "https://clips.twitch.tv/embed?clip=CorrectBillowingGorillaMoreCowbell-n1Ab71TZLZGHJ5pm&parent=www.twitch.tv"
+        ];
+
+        // Funzione per cambiare la clip casualmente
+        function getRandomClip() {
+            const randomClip = clips[Math.floor(Math.random() * clips.length)];
+            document.getElementById("twitchPlayer").src = randomClip;
+        }
+
+        // Cambia la clip ogni 30 secondi
+        getRandomClip();
+        setInterval(getRandomClip, 30000);
+    </script>
+</body>
+</html>

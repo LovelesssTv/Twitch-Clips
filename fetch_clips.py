@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import sys
 
 CLIENT_ID = os.environ.get("TWITCH_CLIENT_ID")
 ACCESS_TOKEN = os.environ.get("TWITCH_ACCESS_TOKEN")
@@ -16,7 +17,14 @@ user_resp = requests.get(
     f"https://api.twitch.tv/helix/users?login={USERNAME}",
     headers=HEADERS
 )
-user_id = user_resp.json()['data'][0]['id']
+
+user_data = user_resp.json().get('data')
+if not user_data:
+    print(f"❌ ERRORE: Utente Twitch '{USERNAME}' non trovato o token invalido.")
+    print("Risposta API:", user_resp.text)
+    sys.exit(1)
+
+user_id = user_data[0]['id']
 
 # Recupera fino a 100 clip
 all_clips = []

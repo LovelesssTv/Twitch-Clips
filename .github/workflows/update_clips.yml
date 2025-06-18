@@ -1,8 +1,11 @@
 name: Update Twitch Clips
 
+permissions:
+  contents: write
+
 on:
   schedule:
-    - cron: '0 6 * * *'  # ogni giorno alle 06:00 UTC
+    - cron: '0 6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,6 +15,9 @@ jobs:
     steps:
       - name: Clona il repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: true
 
       - name: Configura Python
         uses: actions/setup-python@v4
@@ -33,6 +39,3 @@ jobs:
           commit_message: "🔄 Update clips.json"
           file_pattern: clips.json
           branch: main
-          author_name: github-actions[bot]
-          author_email: github-actions[bot]@users.noreply.github.com
-

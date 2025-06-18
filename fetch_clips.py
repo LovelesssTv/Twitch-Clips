@@ -3,6 +3,7 @@ import json
 import os
 import sys
 
+print("▶ Inizio fetch_clips.py")
 CLIENT_ID = os.environ.get("TWITCH_CLIENT_ID")
 ACCESS_TOKEN = os.environ.get("TWITCH_ACCESS_TOKEN")
 USERNAME = "lovelessstv"

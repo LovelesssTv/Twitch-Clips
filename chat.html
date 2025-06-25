@@ -16,8 +16,8 @@
     #chat-container {
       position: absolute;
       bottom: 5%; left: 5%;
-      width: 512px;    /* 20% of 2560 */
-      height: 864px;   /* 60% of 1440 */
+      width: 512px;    /* 20% di 2560 */
+      height: 864px;   /* 60% di 1440 */
       background: rgba(0,0,0,0.6);
       padding: 16px;
       box-sizing: border-box;
@@ -57,7 +57,10 @@
         `<span class="username">${tags['display-name']}</span>` +
         `<span class="text">${message}</span>`;
       chat.appendChild(msg);
-      chat.scrollTop = chat.scrollHeight;
+
+      // Scorri fino al fondo visibile (non troppo oltre)
+      chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+
       // Mantieni solo le ultime 60 righe
       if (chat.children.length > 60) {
         chat.removeChild(chat.firstChild);

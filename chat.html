@@ -42,6 +42,8 @@
 </head>
 <body>
   <div id="chat-container"></div>
+
+  <!-- TMI.js -->
   <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
   <script>
     const chat = document.getElementById('chat-container');
@@ -53,25 +55,38 @@
       chat.scrollTop = chat.scrollHeight - chat.clientHeight;
     }
 
-    log('🔌 Connecting to lovelessstv…');
-    const client = new tmi.Client({ channels: ['lovelessstv'] });
+    log('🔌 Avvio connessione a Twitch…');
+    const client = new tmi.Client({
+      options: { debug: true },
+      connection: { secure: true, reconnect: true },
+      channels: ['lovelessstv']
+    });
 
     client.connect()
-      .then(() => {
-        log('✅ Connected to Twitch chat');
-      })
+      .then(() => log('✅ Connesso a lovelessstv'))
       .catch(err => {
-        log('❌ Connection error: ' + err);
+        log('❌ Errore connessione: ' + err);
         console.error(err);
       });
 
-    client.on('message', (channel, tags, message) => {
-      // Rimuovi i log iniziali se vuoi
+    client.on('disconnected', (reason) => {
+      log('⚠️ Disconnesso: ' + reason);
+    });
+
+    client.on('reconnect', () => {
+      log('🔄 Tentativo di riconnessione…');
+    });
+
+    client.on('message', (_chan, tags, message) => {
+      // rimuovi eventuali log di debug se vuoi
       const msg = document.createElement('div');
       msg.className = 'message';
-      msg.innerHTML = `<span class="username">${tags['display-name']}</span> ${message}`;
+      msg.innerHTML = 
+        `<span class="username">${tags['display-name']}</span>` +
+        `<span class="text">${message}</span>`;
       chat.appendChild(msg);
       chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+      // mantieni max 80 messaggi
       if (chat.children.length > 80) {
         chat.removeChild(chat.firstChild);
       }

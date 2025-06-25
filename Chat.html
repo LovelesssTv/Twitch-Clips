@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <title>LovelesssTV Chat</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      width: 100vw; height: 100vh;
+      background: transparent;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Contenitore chat: 20% larghezza × 60% altezza in 2560×1440 */
+    #chat-container {
+      position: absolute;
+      bottom: 5%; left: 5%;
+      width: 512px;    /* 20% of 2560 */
+      height: 864px;   /* 60% of 1440 */
+      background: rgba(0,0,0,0.6);
+      padding: 16px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      border-radius: 8px;
+    }
+
+    .message {
+      margin: 6px 0;
+      line-height: 1.3;
+      color: #FFFFFF;
+      font-size: 22px;
+    }
+    .message .username {
+      font-weight: bold;
+      margin-right: 8px;
+      color: #61DAFB;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container"></div>
+
+  <!-- tmi.js si connette direttamente a Twitch IRC -->
+  <script src="https://cdn.jsdelivr.net/npm/tmi.js@1.8.5/dist/tmi.min.js"></script>
+  <script>
+    const chat = document.getElementById('chat-container');
+    const client = new tmi.Client({
+      channels: ['lovelessstv']
+    });
+    client.connect();
+
+    client.on('message', (channel, tags, message, self) => {
+      const msg = document.createElement('div');
+      msg.classList.add('message');
+      msg.innerHTML =
+        `<span class="username">${tags['display-name']}</span>` +
+        `<span class="text">${message}</span>`;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+      // Mantieni solo le ultime 60 righe
+      if (chat.children.length > 60) {
+        chat.removeChild(chat.firstChild);
+      }
+    });
+  </script>
+</body>
+</html>

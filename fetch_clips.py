@@ -2,6 +2,7 @@ import requests
 import json
 import os
 import sys
+import random
 
 print("▶ Inizio fetch_clips.py")
 CLIENT_ID = os.environ.get("TWITCH_CLIENT_ID")
@@ -45,6 +46,9 @@ while True:
     pagination = data.get("pagination", {}).get("cursor")
     if not pagination or len(all_clips) >= 100:
         break
+
+# Shuffle casuale prima di prendere le prime 100
+random.shuffle(all_clips)
 
 embed_links = [
     f"https://clips.twitch.tv/embed?clip={clip['id']}&parent=lovelessstv.github.io"

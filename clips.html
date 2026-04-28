@@ -4,23 +4,61 @@
     <iframe id="twitchPlayer" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
 
     <script>
-      let clips = [];
-      let current = 0;
+      const STORAGE_KEY = "clip_queue_loveless";
+      let queue = [];
 
-      fetch("clips.json")
-        .then(r => r.json())
-        .then(data => {
-          clips = data.sort(() => Math.random() - 0.5); // randomizza ordine
-          playNext();
-          setInterval(playNext, 30000); // cambia clip ogni 30 sec
-        });
+      // Fisher-Yates shuffle corretto
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
+      function saveQueue() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(queue)); } catch(e) {}
+      }
+
+      function loadQueue(allClips) {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            // Valida che le clip salvate siano ancora nel JSON attuale
+            const valid = parsed.filter(url => allClips.includes(url));
+            if (valid.length > 0) return valid;
+          }
+        } catch(e) {}
+        return shuffle(allClips); // prima volta o coda esaurita
+      }
 
       function playNext() {
-        if (!clips.length) return;
+        if (!queue.length) return;
+        const url = queue.shift(); // prende la prima
+        saveQueue();
+
+        // Se la coda è quasi vuota, prepara già il prossimo ciclo
+        if (queue.length === 0) {
+          queue = shuffle(JSON.parse(localStorage.getItem("all_clips") || "[]"));
+          saveQueue();
+        }
+
         const iframe = document.getElementById("twitchPlayer");
-        iframe.src = clips[current] + "&autoplay=true&nocache=" + new Date().getTime();
-        current = (current + 1) % clips.length;
+        iframe.src = url + "&autoplay=true&muted=false";
       }
+
+      fetch("clips.json?nocache=" + Date.now())
+        .then(r => r.json())
+        .then(allClips => {
+          // Salva lista completa per rigenerare la coda
+          try { localStorage.setItem("all_clips", JSON.stringify(allClips)); } catch(e) {}
+
+          queue = loadQueue(allClips);
+          playNext();
+          setInterval(playNext, 30000);
+        });
     </script>
   </body>
 </html>

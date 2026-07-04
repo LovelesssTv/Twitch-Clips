@@ -26,23 +26,28 @@
           const saved = localStorage.getItem(STORAGE_KEY);
           if (saved) {
             const parsed = JSON.parse(saved);
-            // Valida che le clip salvate siano ancora nel JSON attuale
             const valid = parsed.filter(url => allClips.includes(url));
             if (valid.length > 0) return valid;
           }
         } catch(e) {}
-        return shuffle(allClips); // prima volta o coda esaurita
+        return shuffle(allClips);
+      }
+
+      // ponytail: legge la durata reale della clip dal parametro URL; fallback 30s se mancante o assurda
+      function getDurationMs(url) {
+        try {
+          const sec = parseFloat(new URL(url).searchParams.get("duration"));
+          return (sec > 0 && sec < 180 ? sec : 30) * 1000 + 3000; // +3s margine buffering
+        } catch(e) { return 33000; }
       }
 
       function playNext() {
         if (!queue.length) return;
-        const url = queue.shift(); // prende la prima
+        const url = queue.shift();
         saveQueue();
 
-        // Se la coda è quasi vuota, prepara già il prossimo ciclo
         if (queue.length === 0) {
           queue = shuffle(JSON.parse(localStorage.getItem("all_clips") || "[]"));
-          // ponytail: evita che la prima clip del nuovo ciclo sia identica all'ultima appena riprodotta
           if (queue[0] === url && queue.length > 1) {
             const swapIdx = 1 + Math.floor(Math.random() * (queue.length - 1));
             [queue[0], queue[swapIdx]] = [queue[swapIdx], queue[0]];
@@ -52,17 +57,17 @@
 
         const iframe = document.getElementById("twitchPlayer");
         iframe.src = url + "&autoplay=true&muted=false";
+
+        setTimeout(playNext, getDurationMs(url));
       }
 
       fetch("clips.json?nocache=" + Date.now())
         .then(r => r.json())
         .then(allClips => {
-          // Salva lista completa per rigenerare la coda
           try { localStorage.setItem("all_clips", JSON.stringify(allClips)); } catch(e) {}
 
           queue = loadQueue(allClips);
           playNext();
-          setInterval(playNext, 30000);
         });
     </script>
   </body>

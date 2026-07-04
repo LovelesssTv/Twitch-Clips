@@ -50,8 +50,9 @@ while True:
 # Shuffle casuale prima di prendere le prime 100
 random.shuffle(all_clips)
 
+# ponytail: duration già presente nella risposta API, riusata per il timer lato client invece di un valore fisso
 embed_links = [
-    f"https://clips.twitch.tv/embed?clip={clip['id']}&parent=lovelessstv.github.io"
+    f"https://clips.twitch.tv/embed?clip={clip['id']}&parent=lovelessstv.github.io&duration={clip.get('duration', 30)}"
     for clip in all_clips[:100]
 ]
 

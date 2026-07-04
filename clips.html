@@ -42,6 +42,11 @@
         // Se la coda è quasi vuota, prepara già il prossimo ciclo
         if (queue.length === 0) {
           queue = shuffle(JSON.parse(localStorage.getItem("all_clips") || "[]"));
+          // ponytail: evita che la prima clip del nuovo ciclo sia identica all'ultima appena riprodotta
+          if (queue[0] === url && queue.length > 1) {
+            const swapIdx = 1 + Math.floor(Math.random() * (queue.length - 1));
+            [queue[0], queue[swapIdx]] = [queue[swapIdx], queue[0]];
+          }
           saveQueue();
         }
 

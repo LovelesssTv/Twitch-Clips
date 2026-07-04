@@ -26,6 +26,11 @@ jobs:
             -d "client_id=${{ secrets.TWITCH_CLIENT_ID }}" \
             -d "client_secret=${{ secrets.TWITCH_CLIENT_SECRET }}" \
             -d "grant_type=client_credentials" | jq -r .access_token)
+          if [ "$TOKEN" == "null" ] || [ -z "$TOKEN" ]; then
+            echo "::error::Token Twitch non ottenuto, controlla i secrets"
+            exit 1
+          fi
+          echo "::add-mask::$TOKEN"
           echo "TWITCH_ACCESS_TOKEN=$TOKEN" >> $GITHUB_ENV
       - name: Esegui fetch_clips.py
         env:

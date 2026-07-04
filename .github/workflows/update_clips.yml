@@ -1,38 +1,37 @@
 name: Update Twitch Clips
-
 permissions:
   contents: write
-
 on:
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
-
 jobs:
   fetch-and-update:
     runs-on: ubuntu-latest
-
     steps:
       - name: Clona il repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           persist-credentials: true
-
       - name: Configura Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-
       - name: Installa dipendenze
         run: pip install requests
-
+      - name: Get App Access Token
+        run: |
+          TOKEN=$(curl -s -X POST "https://id.twitch.tv/oauth2/token" \
+            -d "client_id=${{ secrets.TWITCH_CLIENT_ID }}" \
+            -d "client_secret=${{ secrets.TWITCH_CLIENT_SECRET }}" \
+            -d "grant_type=client_credentials" | jq -r .access_token)
+          echo "TWITCH_ACCESS_TOKEN=$TOKEN" >> $GITHUB_ENV
       - name: Esegui fetch_clips.py
         env:
           TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
-          TWITCH_ACCESS_TOKEN: ${{ secrets.TWITCH_ACCESS_TOKEN }}
+          TWITCH_ACCESS_TOKEN: ${{ env.TWITCH_ACCESS_TOKEN }}
         run: python fetch_clips.py
-
       - name: Commit & Push changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
